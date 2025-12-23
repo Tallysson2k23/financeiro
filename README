@@ -1,0 +1,13 @@
+financeiro/
+├── index.html          (View Principal)
+├── style.css           (Estilos)
+├── src/
+│   ├── app.js          (Ponto de entrada/Inicializador)
+│   ├── controller/
+│   │   └── FinanceController.js
+│   ├── model/
+│   │   ├── AuthService.js
+│   │   └── FinanceModel.js
+│   └── view/
+│       └── FinanceView.js
+└── assets/             (Imagens e ícones)

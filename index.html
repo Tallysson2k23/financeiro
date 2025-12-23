@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="auth-container">
+    <div class="auth-header">
+        <div class="auth-logo">💎</div>
+        <h1>Financeiro<span>Pro</span></h1>
+        <p>Acesse sua conta para gerenciar suas finanças</p>
+    </div>
+
+    <div class="auth-form">
+        <div class="input-group">
+            <label>E-mail</label>
+            <input type="email" id="login-email" placeholder="seu@email.com">
+        </div>
+        
+        <div class="input-group">
+            <label>Senha</label>
+            <input type="password" id="login-senha" placeholder="••••••••">
+        </div>
+
+        <button id="btn-login" class="btn-primary">Entrar na Conta</button>
+        <button id="btn-cadastrar" class="btn-secondary">Ainda não tenho conta</button>
+    </div>
+</div>
+
+    <div id="app-container" style="display: none;">
+        <header>
+    <button id="btn-perfil" class="btn-perfil-link">
+        <span class="icon-user">👤</span> Perfil
+    </button>
+    <button id="btn-sair">Sair</button>
+</header>
+
+        <section class="ads-slider">
+            <div class="ad-card purple">
+                <h4>Dica de Hoje</h4>
+                <p>Economize 10% do seu salário este mês!</p>
+            </div>
+            <div class="ad-card orange">
+                <h4>Mercado</h4>
+                <p>Confira os melhores cartões de crédito.</p>
+            </div>
+        </section>
+
+        <button id="btn-abrir-cadastro">+ Cadastrar Nova Conta</button>
+
+        <div id="modal-cadastro" style="display: none;">
+            <div class="modal-content">
+                <h3>Nova Conta</h3>
+                <form id="form-conta">
+                    <input type="text" id="banco" placeholder="Nome do Banco" required>
+                    <input type="number" id="valor" placeholder="Valor R$" required>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label>Pagamento</label>
+                            <input type="date" id="dataPagamento">
+                        </div>
+                        <div class="col">
+                            <label>Vencimento</label>
+                            <input type="date" id="dataVencimento">
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" id="btn-salvar" class="btn-save">Salvar</button>
+                        <button type="button" id="btn-cancelar" class="btn-cancel">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h3>Minhas Finanças</h3>
+        <div id="lista-contas">
+            </div>
+    </div>
+
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>
