@@ -11,36 +11,36 @@
 </head>
 <body>
 
-<div id="auth-container">
-    <div class="auth-header">
-        <div class="auth-logo">💎</div>
-        <h1>Financeiro<span>Pro</span></h1>
-        <p>Acesse sua conta para gerenciar suas finanças</p>
-    </div>
-
-    <div class="auth-form">
-        <div class="input-group">
-            <label>E-mail</label>
-            <input type="email" id="login-email" placeholder="seu@email.com">
-        </div>
-        
-        <div class="input-group">
-            <label>Senha</label>
-            <input type="password" id="login-senha" placeholder="••••••••">
+    <div id="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">💎</div>
+            <h1>Financeiro<span>Pro</span></h1>
+            <p>Acesse sua conta para gerenciar suas finanças</p>
         </div>
 
-        <button id="btn-login" class="btn-primary">Entrar na Conta</button>
-        <button id="btn-cadastrar" class="btn-secondary">Ainda não tenho conta</button>
+        <div class="auth-form">
+            <div class="input-group">
+                <label>E-mail</label>
+                <input type="email" id="login-email" placeholder="Digite seu e-mail">
+            </div>
+            
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="login-senha" placeholder="Digite sua senha">
+            </div>
+
+            <button id="btn-login" class="btn-primary">Entrar na Conta</button>
+            <button id="btn-ir-para-cadastro" class="btn-secondary">Ainda não tenho conta</button>
+        </div>
     </div>
-</div>
 
     <div id="app-container" style="display: none;">
         <header>
-    <button id="btn-perfil" class="btn-perfil-link">
-        <span class="icon-user">👤</span> Perfil
-    </button>
-    <button id="btn-sair">Sair</button>
-</header>
+            <button id="btn-perfil" class="btn-perfil-link">
+                <span class="icon-user">👤</span> Perfil
+            </button>
+            <button id="btn-sair">Sair</button>
+        </header>
 
         <section class="ads-slider">
             <div class="ad-card purple">
@@ -53,14 +53,28 @@
             </div>
         </section>
 
-        <button id="btn-abrir-cadastro">+ Cadastrar Nova Conta</button>
+        <button id="btn-abrir-modal" class="btn-primary">+ Cadastrar Nova Conta</button>
 
-        <div id="modal-cadastro" style="display: none;">
+        <div class="resumo-financeiro">
+            <div class="card-resumo total">
+                <span>Total Devedor</span>
+                <h2 id="total-devedor">R$ 0,00</h2>
+            </div>
+            <div class="card-resumo restante">
+                <span>Total Pago / Restante</span>
+                <h2 id="total-restante">R$ 0,00</h2>
+            </div>
+        </div>
+
+        <h3 class="titulo-sessao">Minhas Finanças</h3>
+        <div id="lista-contas"></div>
+
+        <div id="modal-cadastro" class="modal" style="display: none;">
             <div class="modal-content">
                 <h3>Nova Conta</h3>
                 <form id="form-conta">
                     <input type="text" id="banco" placeholder="Nome do Banco" required>
-                    <input type="number" id="valor" placeholder="Valor R$" required>
+                    <input type="number" id="valor" placeholder="Valor R$" step="0.01" required>
                     
                     <div class="row">
                         <div class="col">
@@ -69,7 +83,7 @@
                         </div>
                         <div class="col">
                             <label>Vencimento</label>
-                            <input type="date" id="dataVencimento">
+                            <input type="date" id="dataVencimento" required>
                         </div>
                     </div>
 
@@ -80,10 +94,6 @@
                 </form>
             </div>
         </div>
-
-        <h3>Minhas Finanças</h3>
-        <div id="lista-contas">
-            </div>
     </div>
 
     <script type="module" src="src/app.js"></script>

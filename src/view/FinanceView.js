@@ -17,17 +17,39 @@ export class FinanceView {
             return;
         }
 
-        lista.innerHTML = contas.map(conta => `
-            <div class="card-conta">
-                <div class="info">
-                    <h4>${conta.banco}</h4>
-                    <span>Vence: ${this.formatarData(conta.dataVencimento)}</span>
+        lista.innerHTML = contas.map(conta => {
+            const estaPaga = conta.paga === true;
+            
+            const classeCard = estaPaga ? 'card-conta paga' : 'card-conta';
+            const classeValor = estaPaga ? 'valor-pago' : 'valor-pendente';
+            const textoBotao = estaPaga ? 'Pago' : 'Pagar';
+            
+            // Corrigido: Vermelho se não pago (#ef4444), Verde se pago (#10b981)
+            const estiloBotao = estaPaga 
+                ? 'background-color: #10b981;' 
+                : 'background-color: #ef4444;';
+
+            return `
+                <div class="${classeCard}">
+                    <div class="info">
+                        <h4 style="color: #1e293b;">${conta.banco}</h4>
+                        <span>Vence: ${this.formatarData(conta.dataVencimento)}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="${classeValor}">
+                            R$ ${parseFloat(conta.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        </div>
+                        
+                        <button 
+                            onclick="controller.darBaixa('${conta.id}')" 
+                            class="btn-check" 
+                            style="${estiloBotao}">
+                            ${textoBotao}
+                        </button>
+                    </div>
                 </div>
-                <div class="valor">
-                    R$ ${parseFloat(conta.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     formatarData(data) {
@@ -37,6 +59,7 @@ export class FinanceView {
     }
 
     limparFormulario() {
-        document.getElementById('form-conta').reset();
+        const form = document.getElementById('form-conta');
+        if (form) form.reset();
     }
 }

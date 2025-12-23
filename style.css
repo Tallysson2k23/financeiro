@@ -197,40 +197,216 @@ h3 {
     margin-top: 8px;
 }
 
-/* Formulário e Inputs */
-.auth-form {
+/* --- ESTILO DOS INPUTS (LOGIN) --- */
+.auth-form input {
     width: 100%;
-}
-
-.input-group {
-    text-align: left;
+    padding: 16px;
     margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borda quase invisível */
+    border-radius: 16px; /* Bem arredondado */
+    background: rgba(255, 255, 255, 0.05); /* Fundo sutil */
+    color: white;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-.input-group label {
-    display: block;
-    color: var(--text-white);
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    margin-left: 4px;
+.auth-form input:focus {
+    outline: none;
+    border-color: #3b82f6; /* Brilha azul ao clicar */
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
 }
 
-/* Botões da Tela de Login */
-.btn-secondary {
+/* --- ESTILO DO BOTÃO ENTRAR --- */
+#btn-login {
+    background: #2563eb; /* Azul sólido forte */
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    width: 100%;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+}
+
+#btn-login:hover {
+    background: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+}
+
+/* --- ESTILO DO BOTÃO CRIAR CONTA --- */
+#btn-cadastrar {
     background: transparent;
-    color: var(--text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 14px;
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 16px;
     border-radius: 16px;
     width: 100%;
     margin-top: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
 }
 
-.btn-secondary:hover {
+#btn-cadastrar:hover {
+    border-color: #3b82f6;
+    color: white;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+/* Ajuste no título da Logo */
+.auth-header h1 {
+    font-size: 36px;
+    letter-spacing: -1px;
+}
+
+.auth-header h1 span {
+    color: #3b82f6;
+    font-weight: 800;
+}
+
+/* Garante visibilidade total na tela de login */
+#auth-container h1, 
+#auth-container p, 
+#auth-container label {
+    color: #ffffff !important;
+}
+
+#auth-container input {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.resumo-financeiro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.card-resumo {
     background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+.card-resumo span {
+    font-size: 12px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-resumo h2 {
+    margin-top: 8px;
+    font-size: 20px;
     color: #ffffff;
 }
+
+/* Cor de destaque para o devedor */
+.card-resumo.total h2 {
+    color: #f87171; /* Vermelho suave */
+}
+
+/* Cor de destaque para o que já foi pago */
+.card-resumo.restante h2 {
+    color: #4ade80; /* Verde suave */
+}
+
+/* --- BOTÃO CADASTRAR (ESTILO PREMIUM) --- */
+#btn-abrir-modal {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 16px;
+    width: 100%;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    margin-bottom: 25px;
+    transition: transform 0.2s;
+}
+
+#btn-abrir-modal:hover {
+    background-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+/* --- MODAL (FORMULÁRIO FLUTUANTE) --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.9); /* Fundo escuro atrás */
+    display: none; /* Escondido por padrão */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1e293b; /* Azul sólido do painel */
+    padding: 30px;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo dos inputs dentro do formulário */
+#form-conta input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    box-sizing: border-box;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-save { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.btn-cancel { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
+
+
+
+.btn-check {
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    min-width: 80px; /* Garante que o tamanho não mude entre Pagar/Pago */
+    transition: transform 0.1s active;
+}
+
+.btn-check:active {
+    transform: scale(0.95);
+}
+
+.valor-pendente { color: #ef4444; font-weight: 800; }
+.valor-pago { color: #10b981; font-weight: 800; }
+
+
