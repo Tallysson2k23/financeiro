@@ -3,7 +3,6 @@ export class FinanceView {
         return {
             banco: document.getElementById('banco').value,
             valor: document.getElementById('valor').value,
-            dataPagamento: document.getElementById('dataPagamento').value,
             dataVencimento: document.getElementById('dataVencimento').value
         };
     }
@@ -17,14 +16,27 @@ export class FinanceView {
             return;
         }
 
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0); // Zera as horas para comparação justa
+
         lista.innerHTML = contas.map(conta => {
             const estaPaga = conta.paga === true;
             
-            const classeCard = estaPaga ? 'card-conta paga' : 'card-conta';
+            // Lógica de Urgência (6 dias antes)
+            const vencimento = new Date(conta.dataVencimento);
+            vencimento.setHours(0, 0, 0, 0);
+            const diferencaTempo = vencimento - hoje;
+            const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
+            
+            // Fica "urgente" se faltar 6 dias ou menos e NÃO estiver paga
+            const ehUrgente = !estaPaga && diferencaDias <= 6;
+
+            // Definição de Classes CSS
+            const classeCard = `card-conta ${estaPaga ? 'paga' : ''} ${ehUrgente ? 'urgente' : ''}`;
             const classeValor = estaPaga ? 'valor-pago' : 'valor-pendente';
             const textoBotao = estaPaga ? 'Pago' : 'Pagar';
             
-            // Corrigido: Vermelho se não pago (#ef4444), Verde se pago (#10b981)
+            // Cor do Botão: Verde se pago, Vermelho se pendente
             const estiloBotao = estaPaga 
                 ? 'background-color: #10b981;' 
                 : 'background-color: #ef4444;';
@@ -54,6 +66,7 @@ export class FinanceView {
 
     formatarData(data) {
         if (!data) return "--/--";
+        // Ajuste para evitar que o fuso horário mude o dia ao converter string
         const [ano, mes, dia] = data.split("-");
         return `${dia}/${mes}`;
     }

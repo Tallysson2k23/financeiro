@@ -137,7 +137,7 @@ h3 {
 }
 
 .card-conta h4 { margin: 0; color: #1e293b !important; font-size: 18px; }
-.card-conta span { color: #64748b; font-size: 14px; }
+.card-conta span { color: #ff1f02; font-size: 14px; }
 .card-conta .valor { color: var(--success); font-weight: 800; font-size: 20px; }
 
 /* --- BOTÃO SAIR --- */
@@ -406,7 +406,24 @@ h3 {
     transform: scale(0.95);
 }
 
-.valor-pendente { color: #ef4444; font-weight: 800; }
+.valor-pendente { color: #c21010; font-weight: 800; }
 .valor-pago { color: #10b981; font-weight: 800; }
 
 
+/* Card padrão (mais de 6 dias) */
+.card-conta {
+    background-color: white;
+    color: #1e293b;
+}
+
+/* Card urgente (6 dias ou menos para vencer) */
+.card-conta.urgente {
+    background-color: #9c9a27 !important; /* Um vermelho bem clarinho */
+    border: 2px solid #ca391fbb; /* Borda vermelha viva */
+}
+
+/* Se a conta estiver PAGA, ela ignora o vermelho e fica verde */
+.card-conta.paga {
+    background-color: #dcfce7 !important;
+    border: none;
+}
