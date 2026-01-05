@@ -3,7 +3,7 @@
 link web: https://financeiro-f30f3.web.app
 
 OBS: sempre que fizer alteração, rodar -> firebase deploy 
-
+Para limpar o cahe do navegador: control+Shift+R
 
 financeiro/
 ├── index.html          (View Principal)

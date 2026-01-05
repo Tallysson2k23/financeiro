@@ -1,6 +1,7 @@
 import { AuthService } from '../model/AuthService.js';
 
 export class FinanceController {
+
     constructor(model, view) {
         this.model = model;
         this.view = view;
@@ -8,163 +9,180 @@ export class FinanceController {
     }
 
     init() {
-        // --- NAVEGAÇÃO E PERFIL ---
-        const btnPerfil = document.getElementById('btn-perfil');
-        if (btnPerfil) {
-            btnPerfil.addEventListener('click', () => {
-                window.location.href = "perfil.html";
-            });
-        }
-
-        // --- CONTROLE DO MODAL DE CADASTRO ---
-        // Ajustado para o novo ID 'btn-abrir-modal' que colocamos no HTML
-        const btnAbrirModal = document.getElementById('btn-abrir-modal');
-        if (btnAbrirModal) {
-            btnAbrirModal.addEventListener('click', () => {
-                document.getElementById('modal-cadastro').style.display = 'flex';
-            });
-        }
-
-        const btnCancelar = document.getElementById('btn-cancelar');
-        if (btnCancelar) {
-            btnCancelar.addEventListener('click', () => {
-                document.getElementById('modal-cadastro').style.display = 'none';
-            });
-        }
-
-        // --- AUTENTICAÇÃO ---
-        AuthService.observarEstado((user) => {
+        AuthService.observarEstado(async user => {
             if (user) {
                 this.usuarioLogado = user;
                 document.getElementById('auth-container').style.display = 'none';
                 document.getElementById('app-container').style.display = 'block';
-                this.carregarContas();
-            } else {
-                this.usuarioLogado = null;
-                document.getElementById('auth-container').style.display = 'flex';
-                document.getElementById('app-container').style.display = 'none';
+                await this.carregarTudo();
             }
         });
 
-        // Eventos de Login
-        document.getElementById('btn-login').addEventListener('click', () => {
-            const email = document.getElementById('login-email').value;
-            const senha = document.getElementById('login-senha').value;
-            AuthService.login(email, senha).catch(err => alert("Erro ao entrar: " + err.message));
+        document.getElementById('btn-salvar').addEventListener('click', e => {
+            e.preventDefault();
+            this.salvarConta();
         });
 
-        // Evento de Cadastro (Ajustado para o ID btn-ir-para-cadastro)
-        document.getElementById('btn-ir-para-cadastro').addEventListener('click', () => {
-            const email = document.getElementById('login-email').value;
-            const senha = document.getElementById('login-senha').value;
-            if(!email || !senha) return alert("Preencha email e senha para cadastrar");
-            AuthService.cadastrar(email, senha).catch(err => alert("Erro ao cadastrar: " + err.message));
-        });
+        document.getElementById('btn-abrir-modal')
+            .addEventListener('click', () =>
+                document.getElementById('modal-cadastro').style.display = 'flex'
+            );
 
-        document.getElementById('btn-sair').addEventListener('click', () => AuthService.logout());
+        document.getElementById('btn-cancelar')
+            .addEventListener('click', () =>
+                document.getElementById('modal-cadastro').style.display = 'none'
+            );
 
-        // --- SALVAR NOVA CONTA ---
-        const btnSalvar = document.getElementById('btn-salvar');
-        if (btnSalvar) {
-            btnSalvar.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                this.handleSalvarConta();
-            });
-        }
-
-        // Torna o controller acessível globalmente para os botões "Pagar" dentro dos cards
         window.controller = this;
     }
 
-    async handleSalvarConta() {
-        if (!this.usuarioLogado) return;
+    async salvarConta() {
         const dados = this.view.getFormData();
-        
+
         if (!dados.banco || !dados.valor) {
-            alert("Preencha Banco e Valor!");
+            alert("Preencha banco e valor");
             return;
         }
 
-        try {
-            // Adicionamos o status 'paga: false' por padrão em novas contas
-            const novaConta = { ...dados, paga: false };
-            await this.model.salvarConta(novaConta, this.usuarioLogado.uid);
-            
-            document.getElementById('modal-cadastro').style.display = 'none';
-            this.view.limparFormulario();
-            await this.carregarContas(); 
-        } catch (error) {
-            console.error("Erro ao salvar:", error);
-        }
+        await this.model.salvarConta(
+            { ...dados, paga: false },
+            this.usuarioLogado.uid
+        );
+
+        document.getElementById('modal-cadastro').style.display = 'none';
+        this.view.limparFormulario();
+        await this.carregarTudo();
     }
 
-    async carregarContas() {
-        if (!this.usuarioLogado) return;
+    async carregarTudo() {
         const contas = await this.model.buscarContas(this.usuarioLogado.uid);
-        
-        // Atualiza a lista visual
+
         this.view.renderizarContas(contas);
-        
-        // Atualiza os valores de Devedor e Restante
+
+        // ⚠️ só atualiza resumo do mês atual
         this.atualizarResumo(contas);
+
+        await this.carregarGraficos();
     }
-
- async darBaixa(id) {
-    try {
-        // 1. Busca a lista atual de contas para saber o status desta conta específica
-        const contas = await this.model.buscarContas(this.usuarioLogado.uid);
-        const contaAlvo = contas.find(c => c.id === id);
-
-        // 2. Se a conta já estiver Paga, pergunta antes de desfazer
-        if (contaAlvo && contaAlvo.paga) {
-            const confirmar = confirm(`Deseja realmente desfazer o pagamento de "${contaAlvo.banco}"?`);
-            if (!confirmar) return; // Se o usuário cancelar, para aqui.
-        }
-
-        // 3. Se não estava paga (ou se o usuário confirmou), alterna o status
-        await this.model.alternarStatusPagamento(id);
-        
-        // 4. Atualiza a tela e o resumo financeiro
-        await this.carregarContas(); 
-
-    } catch (error) {
-        console.error("Erro ao processar alteração:", error);
-        alert("Não foi possível atualizar o status.");
-    }
-}
 
     atualizarResumo(contas) {
+        const hoje = new Date();
+        const mesAtual = hoje.getMonth() + 1;
+        const anoAtual = hoje.getFullYear();
+
         let devedor = 0;
         let pago = 0;
+        let totalMesAtual = 0;
 
         contas.forEach(conta => {
-            const valor = parseFloat(conta.valor) || 0;
-            if (conta.paga === true) {
-                pago += valor;
-            } else {
-                devedor += valor;
+            const valor = Number(conta.valor) || 0;
+
+            conta.paga ? pago += valor : devedor += valor;
+
+            const data = new Date(conta.dataVencimento);
+            if (
+                data.getMonth() + 1 === mesAtual &&
+                data.getFullYear() === anoAtual
+            ) {
+                totalMesAtual += valor;
             }
         });
 
-        document.getElementById('total-devedor').innerText = 
-            `R$ ${devedor.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-        document.getElementById('total-restante').innerText = 
-            `R$ ${pago.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        document.getElementById('total-devedor').innerText =
+            `R$ ${devedor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+        document.getElementById('total-restante').innerText =
+            `R$ ${pago.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+        // 🔒 Firebase só manda no mês atual
+        this.model.salvarResumoMensal(
+            this.usuarioLogado.uid,
+            anoAtual,
+            mesAtual,
+            totalMesAtual
+        );
     }
-async excluirConta(idConta) {
-    const confirmar = confirm("Tem certeza que deseja apagar esta conta?");
-    if (!confirmar) return;
 
-    try {
-        await this.model.excluirConta(idConta);
-        await this.carregarContas(); // Atualiza a tela
-    } catch (error) {
-        alert("Erro ao apagar conta.");
-        console.error(error);
+    async carregarGraficos() {
+
+        const hoje = new Date();
+        const mesAtual = hoje.getMonth() + 1;
+        const anoAtual = hoje.getFullYear();
+
+        // 🔹 Firebase (somente mês atual)
+        const dadosFirebase = await this.model.buscarResumo(
+            this.usuarioLogado.uid,
+            12
+        );
+
+        // 🔹 Excel (histórico)
+        const dadosMock = this.getDadosHistoricosMock();
+
+        const mapa = {};
+
+        // 1️⃣ Primeiro coloca Excel
+        dadosMock.forEach(d => {
+            mapa[`${d.ano}-${d.mes}`] = d;
+        });
+
+        // 2️⃣ Firebase só substitui se for mês atual
+        dadosFirebase.forEach(d => {
+            if (d.ano === anoAtual && d.mes === mesAtual) {
+                mapa[`${d.ano}-${d.mes}`] = d;
+            }
+        });
+
+        const dadosFinal = Object.values(mapa).sort(
+            (a, b) => (a.ano * 12 + a.mes) - (b.ano * 12 + b.mes)
+        );
+
+        this.view.renderizarGrafico(
+            "grafico3Meses",
+            dadosFinal,
+            "Últimos 3 meses",
+            3
+        );
+
+        this.view.renderizarGrafico(
+            "grafico12Meses",
+            dadosFinal,
+            "Últimos 12 meses",
+            12
+        );
     }
-}
 
+    async darBaixa(id) {
+        await this.model.alternarStatusPagamento(id);
+        await this.carregarTudo();
+    }
 
+    async excluirConta(id) {
+        if (!confirm("Deseja realmente excluir esta conta?")) return;
+        await this.model.excluirConta(id);
+        await this.carregarTudo();
+    }
 
+    // 🔹 HISTÓRICO VISUAL (EXCEL)
+    getDadosHistoricosMock() {
+        return [
+            { mes: 8,  ano: 2024, totalGasto: 3911.27 },
+            { mes: 9,  ano: 2024, totalGasto: 3552.64 },
+            { mes: 10, ano: 2024, totalGasto: 3797.44 },
+            { mes: 11, ano: 2024, totalGasto: 4494.51 },
+            { mes: 12, ano: 2024, totalGasto: 3902.83 },
 
+            { mes: 1,  ano: 2025, totalGasto: 4418.09 },
+            { mes: 2,  ano: 2025, totalGasto: 4763.13 },
+            { mes: 3,  ano: 2025, totalGasto: 5258.21 },
+            { mes: 4,  ano: 2025, totalGasto: 3914.96 },
+            { mes: 5,  ano: 2025, totalGasto: 5647.56 },
+            { mes: 6,  ano: 2025, totalGasto: 4241.16 },
+            { mes: 7,  ano: 2025, totalGasto: 7068.99 },
+            { mes: 8,  ano: 2025, totalGasto: 3800.35 },
+            { mes: 9,  ano: 2025, totalGasto: 4374.12 },
+            { mes: 10, ano: 2025, totalGasto: 3888.79 },
+            { mes: 11, ano: 2025, totalGasto: 3867.44 },
+            { mes: 12, ano: 2025, totalGasto: 4535.56 }
+        ];
+    }
 }
