@@ -427,3 +427,19 @@ h3 {
     background-color: #dcfce7 !important;
     border: none;
 }
+
+.btn-delete {
+    background-color: #ef4444; /* vermelho */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+    transform: scale(1.1);
+}

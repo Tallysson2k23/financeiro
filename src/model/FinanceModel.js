@@ -1,6 +1,10 @@
 import { db } from './FirebaseConfig.js';
 // Adicionei doc, updateDoc e getDoc na importação abaixo
-import { collection, addDoc, query, where, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  collection, addDoc, query, where, getDocs, 
+  doc, updateDoc, getDoc, deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 
 export class FinanceModel {
     async salvarConta(conta, userId) {
@@ -16,6 +20,18 @@ export class FinanceModel {
             throw e;
         }
     }
+
+    async excluirConta(idConta) {
+    try {
+        const contaRef = doc(db, "contas", idConta);
+        await deleteDoc(contaRef);
+        return true;
+    } catch (error) {
+        console.error("Erro ao excluir conta:", error);
+        throw error;
+    }
+}
+
 
     async buscarContas(userId) {
         try {

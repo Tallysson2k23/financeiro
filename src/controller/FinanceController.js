@@ -151,4 +151,20 @@ export class FinanceController {
         document.getElementById('total-restante').innerText = 
             `R$ ${pago.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
     }
+async excluirConta(idConta) {
+    const confirmar = confirm("Tem certeza que deseja apagar esta conta?");
+    if (!confirmar) return;
+
+    try {
+        await this.model.excluirConta(idConta);
+        await this.carregarContas(); // Atualiza a tela
+    } catch (error) {
+        alert("Erro ao apagar conta.");
+        console.error(error);
+    }
+}
+
+
+
+
 }

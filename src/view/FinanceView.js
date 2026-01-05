@@ -47,17 +47,26 @@ export class FinanceView {
                         <h4 style="color: #1e293b;">${conta.banco}</h4>
                         <span>Vence: ${this.formatarData(conta.dataVencimento)}</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div class="${classeValor}">
-                            R$ ${parseFloat(conta.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                        </div>
-                        
-                        <button 
-                            onclick="controller.darBaixa('${conta.id}')" 
-                            class="btn-check" 
-                            style="${estiloBotao}">
-                            ${textoBotao}
-                        </button>
+<div style="display: flex; align-items: center; gap: 10px;">
+    <div class="${classeValor}">
+        R$ ${parseFloat(conta.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+    </div>
+
+    <button 
+        onclick="controller.darBaixa('${conta.id}')" 
+        class="btn-check" 
+        style="${estiloBotao}">
+        ${textoBotao}
+    </button>
+
+    <button 
+        onclick="controller.excluirConta('${conta.id}')"
+        class="btn-delete"
+        title="Excluir conta">
+        🗑
+    </button>
+</div>
+
                     </div>
                 </div>
             `;
