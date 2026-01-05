@@ -427,6 +427,10 @@ h3 {
     background-color: #dcfce7 !important;
     border: none;
 }
+.card-conta.paga {
+    background-color: #dcfce7 !important;
+    border: none;
+}
 
 .btn-delete {
     background-color: #ef4444; /* vermelho */
